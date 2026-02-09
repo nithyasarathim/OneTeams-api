@@ -6,8 +6,9 @@ interface Config {
   port: Number;
   authClientUrl: string;
   authServerUrl: string;
-    databaseServerUrl: string;
-    cacheServerUrl: string;
+  databaseServerUrl: string;
+  cacheServerUrl: string;
+  clientDomainUrl: string;
 }
 
 const requireEnv = (value: string): string => {
@@ -24,8 +25,9 @@ const config: Config = {
   port: Number(requireEnv("ONE_TEAMS_SERVER_PORT")),
   authClientUrl: requireEnv("ONE_AUTH_CLIENT_URL"),
   authServerUrl: requireEnv("ONE_AUTH_SERVER_URL"),
-    databaseServerUrl: requireEnv("ONE_TEAMS_DATABASE_SERVER_URL"),
-  cacheServerUrl:requireEnv("ONE_TEAMS_CACHE_SERVER_URL"),
+  databaseServerUrl: requireEnv("ONE_TEAMS_DATABASE_SERVER_URL"),
+  cacheServerUrl: requireEnv("ONE_TEAMS_CACHE_SERVER_URL"),
+  clientDomainUrl: requireEnv("ONE_TEAMS_CLIENT_DOMAIN_URL"),
 };
 
 export default config;
