@@ -1,6 +1,6 @@
 import EnvError from "../errors/env.error";
 import ApiError from "../errors/api.error";
-import NetError from "../errors/net.error";
+import AuthError from "../errors/auth.error";
 import SSOError from "../errors/sso.error";
 import type { Request, Response, NextFunction } from "express";
 
@@ -17,9 +17,9 @@ const errorHandler = function (
       success: false,
     });
   }
-  if (err instanceof NetError) {
-    console.error(`[CONNECTIVITY ERROR] : ${err.message}`);
-    return res.status(err.statusCode).json({
+  if (err instanceof AuthError) {
+    console.error(`[AUTHENTICATION ERROR] : ${err.message}`);
+    return res.status(500).json({
       message: "Internal Server Error",
       success: false,
     });

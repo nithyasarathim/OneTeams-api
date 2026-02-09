@@ -8,8 +8,13 @@ interface Config {
   authServerUrl: string;
   databaseServerUrl: string;
   cacheServerUrl: string;
-  windowMs: string;
+  windowMs: number;
   clientDomainUrl: string;
+  clientId: string;
+  authClientSecret: string;
+  tokenRedirectUrl: string;
+  authCookieMaxAge: number;
+  nodeEnv: string;
 }
 
 const requireEnv = (value: string): string => {
@@ -29,7 +34,12 @@ const config: Config = {
   databaseServerUrl: requireEnv("ONE_TEAMS_DATABASE_SERVER_URL"),
   cacheServerUrl: requireEnv("ONE_TEAMS_CACHE_SERVER_URL"),
   clientDomainUrl: requireEnv("ONE_TEAMS_CLIENT_DOMAIN_URL"),
-  windowMs:requireEnv("ONE_TEAMS_RATE_LIMIT_WINDOW_SIZE")
+  windowMs: Number(requireEnv("ONE_TEAMS_RATE_LIMIT_WINDOW_SIZE")),
+  clientId: requireEnv("ONE_TEAMS_CLIENT_ID"),
+  authClientSecret: requireEnv("ONE_AUTH_SERVER_TO_SERVER_SECRET"),
+  tokenRedirectUrl: requireEnv("ONE_AUTH_TOKEN_REDIRECT_URL"),
+  authCookieMaxAge: Number(requireEnv("ONE_TEAMS_AUTH_COOKIE_MAX_AGE")),
+  nodeEnv: requireEnv("NODE_ENVIRONMENT"),
 };
 
 export default config;
