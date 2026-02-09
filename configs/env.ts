@@ -8,6 +8,7 @@ interface Config {
   authServerUrl: string;
   databaseServerUrl: string;
   cacheServerUrl: string;
+  windowMs: string;
   clientDomainUrl: string;
 }
 
@@ -28,6 +29,7 @@ const config: Config = {
   databaseServerUrl: requireEnv("ONE_TEAMS_DATABASE_SERVER_URL"),
   cacheServerUrl: requireEnv("ONE_TEAMS_CACHE_SERVER_URL"),
   clientDomainUrl: requireEnv("ONE_TEAMS_CLIENT_DOMAIN_URL"),
+  windowMs:requireEnv("ONE_TEAMS_RATE_LIMIT_WINDOW_SIZE")
 };
 
 export default config;
