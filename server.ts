@@ -8,7 +8,7 @@ const startServer = async () => {
   await connectCache();
   app.listen(config.port, () => {
     console.log(
-      `One Auth Server is running on http://localhost:${config.port}`,
+      `One Teams Server is running on http://localhost:${config.port}`,
     );
   });
 };

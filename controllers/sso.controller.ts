@@ -37,7 +37,6 @@ const processAuthCode = async (
 ): Promise<void> => {
   try {
     const authorizationCode = req.query.code as string;
-
     if (!authorizationCode) {
       throw new AuthError("Authorization code missing");
     }
@@ -58,7 +57,7 @@ const processAuthCode = async (
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: config.nodeEnv=='production',
+      secure: config.nodeEnv == "production",
       sameSite: "lax",
       maxAge: config.authCookieMaxAge,
     });
