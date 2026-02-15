@@ -15,6 +15,7 @@ interface Config {
   tokenRedirectUrl: string;
   authCookieMaxAge: number;
   nodeEnv: string;
+  sessionTime: string;
 }
 
 const requireEnv = (value: string): string => {
@@ -40,6 +41,7 @@ const config: Config = {
   tokenRedirectUrl: requireEnv("ONE_AUTH_TOKEN_REDIRECT_URL"),
   authCookieMaxAge: Number(requireEnv("ONE_TEAMS_AUTH_COOKIE_MAX_AGE")),
   nodeEnv: requireEnv("NODE_ENVIRONMENT"),
+  sessionTime: requireEnv("SESSION_TIME")
 };
 
 export default config;
