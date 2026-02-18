@@ -4,6 +4,42 @@ import { redis } from "../configs/cache";
 import authAPI from "../configs/axios/auth.axios";
 import AuthError from "../errors/auth.error";
 
+const validateSession = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const accessToken = req.cookies?.access_token as string | undefined;
+
+    if (!accessToken) {
+      res.status(401).json({
+        success: false,
+        message: "No access token found. User not authenticated",
+      });
+      return;
+    }
+
+    const cacheKey = `userinfo:${accessToken}`;
+    const cachedUser = await redis.get(cacheKey);
+
+    if (!cachedUser) {
+      res.status(401).json({
+        success: false,
+        message: "No session established",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      userdata: JSON.parse(cachedUser),
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const fetchUserInfo = async (
   req: Request,
   res: Response,
@@ -17,8 +53,7 @@ const fetchUserInfo = async (
     }
 
     const cacheKey = `userinfo:${accessToken}`;
-
-    const cachedUser: string | null = await redis.get(cacheKey);
+    const cachedUser = await redis.get(cacheKey);
 
     if (cachedUser) {
       res.status(200).json({
@@ -28,7 +63,7 @@ const fetchUserInfo = async (
       return;
     }
 
-    const userInfoResponse = await authAPI.get("sso/userinfo", {
+    const userInfoResponse = await authAPI.get("/sso/userinfo", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -57,7 +92,7 @@ const processAuthCode = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const authorizationCode = req.query.code as string;
+    const authorizationCode = req.query.code as string | undefined;
 
     if (!authorizationCode) {
       throw new AuthError("Authorization code missing");
@@ -90,4 +125,4 @@ const processAuthCode = async (
   }
 };
 
-export { processAuthCode, fetchUserInfo };
+export { processAuthCode, fetchUserInfo, validateSession };
