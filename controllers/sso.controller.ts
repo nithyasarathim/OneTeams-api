@@ -125,4 +125,32 @@ const processAuthCode = async (
   }
 };
 
-export { processAuthCode, fetchUserInfo, validateSession };
+const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const accessToken = req.cookies?.access_token as string | undefined;
+
+    if (accessToken) {
+      const cacheKey = `userinfo:${accessToken}`;
+      await redis.del(cacheKey);
+    }
+
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: config.nodeEnv === "production",
+      sameSite: "lax",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export { processAuthCode, fetchUserInfo, validateSession, logout };
