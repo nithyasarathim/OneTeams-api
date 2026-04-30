@@ -13,22 +13,33 @@ const validateSession = async (
     const accessToken = req.cookies?.access_token as string | undefined;
 
     if (!accessToken) {
-      res.status(401).json({
-        success: false,
-        message: "No access token found. User not authenticated",
-      });
+      res
+        .status(401)
+        .json({ success: false, message: "No access token found" });
       return;
     }
 
     const cacheKey = `userinfo:${accessToken}`;
-    const cachedUser = await redis.get(cacheKey);
+    let cachedUser = await redis.get(cacheKey);
 
     if (!cachedUser) {
-      res.status(401).json({
-        success: false,
-        message: "No session established",
-      });
-      return;
+      try {
+        const userInfoResponse = await authAPI.get("/sso/userinfo", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const userData = userInfoResponse.data.data.user;
+        await redis.setEx(
+          cacheKey,
+          Number(config.sessionTime),
+          JSON.stringify(userData),
+        );
+        cachedUser = JSON.stringify(userData);
+      } catch (err) {
+        res
+          .status(401)
+          .json({ success: false, message: "Session expired on auth server" });
+        return;
+      }
     }
 
     res.status(200).json({
